@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog Post - Tranquil's Blog</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --background: #f4f4f9;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--background);
+      color: #333;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: var(--primary);
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      padding: 1rem;
+      border-bottom: 1px solid #34495e;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+    }
+
+    /* Top nav */
+    .topnav {
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .logo {
+      font-weight: bold;
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .main-post {
+      flex: 3;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .main-post h2 {
+      color: #2c3e50;
+    }
+
+    .main-post img {
+      max-width: 100%;
+      margin: 1rem 0;
+      border-radius: 6px;
+    }
+
+    .sidebar-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .sidebar-box {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .sidebar-box h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    .category-list, .featured-posts {
+      list-style: none;
+      padding: 0;
+    }
+
+    .category-list li, .featured-posts li {
+      margin-bottom: 0.5rem;
+    }
+
+    .category-list a, .featured-posts a {
+      text-decoration: none;
+      color: #2c3e50;
+    }
+
+    .category-list a:hover, .featured-posts a:hover {
+      text-decoration: underline;
+    }
+
+    .share-buttons {
+      margin-top: 2rem;
+    }
+
+    .share-buttons button {
+      background: #2c3e50;
+      color: white;
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .share-buttons button:hover {
+      background: #1a252f;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="blog.html"><i class="fas fa-blog"></i> Blog</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+      <li><a href="policies.html"><i class="fas fa-shield-alt"></i> Policies</a></li>
+    </ul>
+  </div>
+
+  <!-- Top Navigation -->
+  <div class="topnav">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="logo">Tranquil's Blog</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Blog Post -->
+    <div class="main-post" id="postContainer">
+      <h2>Loading post...</h2>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar-right">
+      <div class="sidebar-box">
+        <h3>Categories</h3>
+        <ul class="category-list" id="categorySidebar"></ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Featured Posts</h3>
+        <ul class="featured-posts" id="featuredPosts"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle Sidebar
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+
+    // Load Post
+    const post = JSON.parse(localStorage.getItem("currentPost"));
+    const container = document.getElementById("postContainer");
+
+    if (!post) {
+      container.innerHTML = "<p>Post not found.</p>";
+    } else {
+      container.innerHTML = `
+        <h2>${post.title}</h2>
+        <p><em>${post.category || "Uncategorized"}</em></p>
+        ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ""}
+        <div>${post.content}</div>
+
+        <div class="share-buttons">
+          <button onclick="copyLink()"><i class="fas fa-link"></i> Copy Link</button>
+          <button onclick="shareToFB()"><i class="fab fa-facebook-f"></i> Facebook</button>
+          <button onclick="shareToWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+        </div>
+      `;
+    }
+
+    // Share Functions
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Post link copied!");
+    }
+
+    function shareToFB() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    }
+
+    function shareToWhatsApp() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://wa.me/?text=${url}`, '_blank');
+    }
+
+    // Load Categories
+    const blogPosts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+    const categories = new Set(blogPosts.map(p => p.category || "Uncategorized"));
+    const categorySidebar = document.getElementById("categorySidebar");
+
+    categories.forEach(cat => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="blog.html?category=${encodeURIComponent(cat)}">${cat}</a>`;
+      categorySidebar.appendChild(li);
+    });
+
+    // Featured Posts
+    const featured = document.getElementById("featuredPosts");
+    blogPosts.slice(0, 3).forEach(p => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="post.html" onclick="viewFeatured(event, ${JSON.stringify(p).replace(/"/g, '&quot;')})">${p.title}</a>`;
+      featured.appendChild(li);
+    });
+
+    function viewFeatured(e, post) {
+      e.preventDefault();
+      localStorage.setItem("currentPost", JSON.stringify(post));
+      window.location.href = "post.html";
+    }
+  </script>
+</body>
+</html>
