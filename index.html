@@ -273,54 +273,74 @@
   </main>
 
   <!-- JavaScript -->
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      const blogTitle = document.getElementById("blogTitleSmall");
-      sidebar.classList.toggle("active");
-      blogTitle.style.display = sidebar.classList.contains("active") ? "none" : "block";
-    }
+  <script> 
+    //index
+// Sidebar Toggle
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const blogTitle = document.getElementById("blogTitleSmall");
+  sidebar.classList.toggle("active");
+  blogTitle.style.display = sidebar.classList.contains("active") ? "none" : "block";
+}
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+// Close Sidebar When Clicking Outside (Mobile)
+document.addEventListener("click", function (event) {
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.querySelector(".toggle-btn");
 
-    const featuredContainer = document.getElementById('featured');
-    const storedPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+  if (!sidebar || !toggleBtn) return;
 
-    if (storedPosts.length === 0) {
-      featuredContainer.innerHTML = `<p>No blog posts available yet.</p>`;
-    } else {
-      storedPosts.reverse().forEach(post => {
-        featuredContainer.innerHTML += `
-          <div class="post">
-            <img src="${post.image || 'images/default.jpg'}" alt="${post.title}" />
-            <h3>${post.title}</h3>
-            <p>${(post.content || post.summary || "No preview").substring(0, 100)}...</p>
-            <a href="post.html?title=${encodeURIComponent(post.title)}" class="read-more-btn">Read More</a>
-          </div>
-        `;
-      });
-    }
+  const isClickInsideSidebar = sidebar.contains(event.target);
+  const isClickOnToggleBtn = toggleBtn.contains(event.target);
 
-    // Scroll Animation for Header
-    let lastScroll = 0;
-    const header = document.querySelector('.header-bar');
+  if (!isClickInsideSidebar && !isClickOnToggleBtn && sidebar.classList.contains("active")) {
+    sidebar.classList.remove("active");
+    document.getElementById("blogTitleSmall").style.display = "block";
+  }
+});
 
-    window.addEventListener('scroll', () => {
-      const currentScroll = window.pageYOffset;
+// Dynamic Year in Footer
+document.getElementById("year").textContent = new Date().getFullYear();
 
-      if (currentScroll > lastScroll && currentScroll > 50) {
-        header.style.transform = "translateY(-100%)";
-      } else {
-        header.style.transform = "translateY(0)";
-        header.classList.add("scrolled");
-      }
+// Load Featured Posts from localStorage
+const featuredContainer = document.getElementById('featured');
+const storedPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
 
-      if (currentScroll <= 10) {
-        header.classList.remove("scrolled");
-      }
+if (storedPosts.length === 0) {
+  featuredContainer.innerHTML = `<p>No blog posts available yet.</p>`;
+} else {
+  storedPosts.reverse().forEach(post => {
+    featuredContainer.innerHTML += `
+      <div class="post">
+        <img src="${post.image || 'images/default.jpg'}" alt="${post.title}" />
+        <h3>${post.title}</h3>
+        <p>${(post.content || post.summary || "No preview").substring(0, 100)}...</p>
+        <a href="post.html?title=${encodeURIComponent(post.title)}" class="read-more-btn">Read More</a>
+      </div>
+    `;
+  });
+}
 
-      lastScroll = currentScroll;
-    });
+// Header Scroll Animation
+let lastScroll = 0;
+const header = document.querySelector('.header-bar');
+
+window.addEventListener('scroll', () => {
+  const currentScroll = window.pageYOffset;
+
+  if (currentScroll > lastScroll && currentScroll > 50) {
+    header.style.transform = "translateY(-100%)";
+  } else {
+    header.style.transform = "translateY(0)";
+    header.classList.add("scrolled");
+  }
+
+  if (currentScroll <= 10) {
+    header.classList.remove("scrolled");
+  }
+
+  lastScroll = currentScroll;
+});
   </script>
 </body>
 </html>
