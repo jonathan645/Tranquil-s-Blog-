@@ -222,79 +222,103 @@
 
   <div class="container">
     <div class="grid" id="blogGrid"></div>
+  </div>" id="categorySlider"></div>
+
+  <div class="container">
+    <div class="grid" id="blogGrid"></div>
   </div>
 
   <script>
-    const blogPosts = JSON.parse(localStorage.getItem("blogPosts")) || [];
-    const blogGrid = document.getElementById("blogGrid");
-    const categorySlider = document.getElementById("categorySlider");
+    //blog
+  const blogPosts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+  const blogGrid = document.getElementById("blogGrid");
+  const categorySlider = document.getElementById("categorySlider");
 
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
+  function displayCategories() {
+    const categories = [...new Set(blogPosts.map(p => p.category || "Uncategorized"))];
+    categories.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.textContent = cat;
+      btn.onclick = () => filterByCategory(cat);
+      categorySlider.appendChild(btn);
+    });
+  }
 
-    function displayCategories() {
-      const categories = [...new Set(blogPosts.map(p => p.category || "Uncategorized"))];
-      categories.forEach(cat => {
-        const btn = document.createElement("button");
-        btn.textContent = cat;
-        btn.onclick = () => filterByCategory(cat);
-        categorySlider.appendChild(btn);
+  function filterByCategory(cat) {
+    const filtered = blogPosts.filter(p => p.category === cat);
+    displayPosts(filtered);
+  }
+
+  function displayPosts(posts) {
+    blogGrid.innerHTML = "";
+    posts.forEach(post => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        ${post.image ? `<img src="${post.image}" alt="${post.title}" />` : ""}
+        <div class="card-content">
+          <h3>${post.title}</h3>
+          <p>${(post.summary || post.content).substring(0, 100)}...</p>
+        </div>
+      `;
+
+      const readMore = document.createElement("a");
+      readMore.textContent = "Read More";
+      readMore.href = "post.html";
+      readMore.classList.add("read-more-btn");
+      readMore.onclick = (e) => {
+        e.preventDefault();
+        localStorage.setItem("currentPost", JSON.stringify(post));
+        window.location.href = "post.html";
+      };
+
+      div.querySelector(".card-content").appendChild(readMore);
+      blogGrid.appendChild(div);
+    });
+
+    animateReveal();
+  }
+
+  // Animate cards
+  function animateReveal() {
+    const cards = document.querySelectorAll(".card");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal");
+          observer.unobserve(entry.target);
+        }
       });
+    }, { threshold: 0.1 });
+
+    cards.forEach(card => observer.observe(card));
+  }
+
+  displayCategories();
+  displayPosts(blogPosts);
+
+  // ✅ Sidebar toggle with outside-click closing
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("active");
+
+    if (sidebar.classList.contains("active")) {
+      // Wait a tick before binding outside click
+      setTimeout(() => {
+        document.addEventListener("click", outsideClickListener);
+      }, 10);
     }
+  }
 
-    function filterByCategory(cat) {
-      const filtered = blogPosts.filter(p => p.category === cat);
-      displayPosts(filtered);
+  function outsideClickListener(event) {
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.querySelector(".hamburger");
+
+    if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+      sidebar.classList.remove("active");
+      document.removeEventListener("click", outsideClickListener);
     }
-
-    function displayPosts(posts) {
-      blogGrid.innerHTML = "";
-      posts.forEach(post => {
-        const div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML = `
-          ${post.image ? `<img src="${post.image}" alt="${post.title}" />` : ""}
-          <div class="card-content">
-            <h3>${post.title}</h3>
-            <p>${(post.summary || post.content).substring(0, 100)}...</p>
-          </div>
-        `;
-
-        const readMore = document.createElement("a");
-        readMore.textContent = "Read More";
-        readMore.href = "post.html";
-        readMore.classList.add("read-more-btn");
-        readMore.onclick = (e) => {
-          e.preventDefault();
-          localStorage.setItem("currentPost", JSON.stringify(post));
-          window.location.href = "post.html";
-        };
-
-        div.querySelector(".card-content").appendChild(readMore);
-        blogGrid.appendChild(div);
-      });
-
-      animateReveal();
     }
-
-    // Reveal animation using IntersectionObserver
-    function animateReveal() {
-      const cards = document.querySelectorAll(".card");
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("reveal");
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-
-      cards.forEach(card => observer.observe(card));
-    }
-
-    displayCategories();
-    displayPosts(blogPosts);
   </script>
 </body>
 </html>
