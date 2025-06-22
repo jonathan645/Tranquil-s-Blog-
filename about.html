@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF‑8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us – Tranquil’s Blog</title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #00b894;
+      --bg-overlay: rgba(0, 0, 0, 0.6);
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', sans-serif;
+      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
+      color: #f4f4f9;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: var(--bg-overlay);
+      z-index: -1;
+    }
+
+    .sidebar {
+      position: fixed; top: 0; left: -250px;
+      width: 250px; height: 100%;
+      background: var(--primary);
+      color: white;
+      transition: left .3s;
+      z-index: 1000;
+    }
+    .sidebar.active { left: 0; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { border-bottom: 1px solid #34495e; }
+    .sidebar a {
+      display: flex; align-items: center;
+      padding: 1rem; color: white;
+      text-decoration: none;
+      transition: color .3s;
+    }
+    .sidebar a:hover { color: var(--accent); }
+    .sidebar a i { margin-right: 10px; }
+
+    .topnav {
+      position: sticky; top: 0;
+      background: var(--primary);
+      color: white;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      z-index: 900;
+    }
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(var(--bg-overlay), var(--bg-overlay));
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 3rem;
+      color: #fff;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-top: .5rem;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid rgba(255,255,255,0.75);
+      animation: typing 5s steps(40, end), blink .75s step-end infinite;
+      max-width: 100%;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: whie }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: rgba(255,255,255,.85);
+      color: #333;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+
+    .about-section h1 {
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .team {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    .member {
+      flex: 1 1 calc(50% - 2rem);
+      height: 400px;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      color: white;
+      transition: transform .3s;
+    }
+    .member:hover {
+      transform: translateY(-5px);
+    }
+    .member::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+    }
+    .member-content {
+      position: relative;
+      z-index: 2;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .member-content i {
+      font-size: 2.5rem;
+    }
+    .member-content h3 {
+      margin: 1rem 0 .5rem;
+    }
+
+    .section + .section { margin-top: 2rem; }
+    .section h2 {
+      color: var(--primary);
+      margin-bottom: .5rem;
+    }
+
+    .section ul {
+      list-style: none;
+      padding: 0 1rem;
+    }
+    .section li {
+      margin: .5rem 0;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    .section li::before {
+      content: '✔';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+    }
+    .section a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: transform .3s, color .3s;
+    }
+    .section a:hover {
+      color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .cta {
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .cta a {
+      background: linear-gradient(to right, var(--accent), var(--primary));
+      color: white;
+      padding: .7rem 1.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,.2);
+      transition: background .3s;
+    }
+    .cta a:hover {
+      background: linear-gradient(to right, var(--primary), var(--accent));
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+      .member {
+        flex: 1 1 100%;
+        height: auto;
+      }
+      .member-content {
+        padding: 1rem;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="Blog.html"><i class="fas fa-blog"></i> Blog</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+      <li><a href="policies.html"><i class="fas fa-shield-alt"></i> Policies</a></li>
+    </ul>
+  </div>
+
+  <!-- Top Navigation -->
+  <div class="topnav">
+    <div class="hamburger" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="logo">
+      <img src="logo.png" alt="Tranquil's Logo" style="height: 40px; vertical-align: middle;">
+      
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero" data-aos="fade-down">
+    <h1>About Us</h1>
+    <p>Words that inspire. Stories that resonate.</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container about-section" data-aos="fade-up">
+    <p>
+      Welcome to <strong>Tranquil’s Blog</strong>, a platform powered by two passionate minds — <strong>Jonathan Julius</strong> and <strong>Femi Moses</strong>. Our mission is to publish authentic, powerful stories and ideas that inspire, educate, and uplift people, especially Nigerians. We believe that truth-driven writing has the power to transform minds and build nations.
+    </p>
+
+    <div class="team">
+      <div class="member" style="background-image: url('https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?auto=format&fit=crop&w=800&q=80');">
+        <div class="member-content">
+          <i class="fas fa-laptop-code"></i>
+          <h3>Jonathan Julius</h3>
+          <p><strong>Tech Architect</strong> of Tranquil’s Blog. Jonathan is the engine room behind our website — developing and designing every line of code that brings our vision to life.</p>
+        </div>
+      </div>
+
+      <div class="member" style="background-image: url('https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?auto=format&fit=crop&w=800&q=80');">
+        <div class="member-content">
+          <i class="fas fa-pen-nib"></i>
+          <h3>Femi Moses</h3>
+          <p><strong>Lead Writer</strong> and storyteller. Femi breathes life into words — curating stories that speak truth, inspire change, and bring people closer to meaning.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>What We Stand For</h2>
+      <ul>
+        <li>Authentic, truthful storytelling — no fake news</li>
+        <li>Enriching minds through informative, uplifting content</li>
+        <li>Inspiring Nigerian youths with relatable articles</li>
+        <li>Using writing to foster positive change in our society</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>What You’ll Find Here</h2>
+      <ul>
+        <li>📖 Real-life stories & personal reflections</li>
+        <li>💡 Informative articles & practical advice</li>
+        <li>📰 Opinions on culture, tech, and life in Nigeria</li>
+        <li>🗣 Content that motivates, educates and empowers</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Who We Write For</h2>
+      <p>
+        We write for everyday Nigerians, students, professionals, dreamers, creatives — anyone who seeks genuine insights and truth-telling. If you value meaningful reads over clickbait, welcome home.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Let’s Connect</h2>
+      <p>
+        Do you have feedback, want to collaborate, or simply say hello? You can <a href="contact.html">reach out here</a> or connect with us on:
+      </p>
+      <ul>
+        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+      </ul>
+    </div>
+
+    <div class="cta">
+      <h2>Join Our Journey</h2>
+      <p>Want to stay updated with our latest content? Bookmark our blog or follow us for more inspiring reads.</p>
+      <a href="Blog.html"><i class="fas fa-arrow-right"></i> Explore Our Blog</a>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+  </script>
+</body>
+</html>
