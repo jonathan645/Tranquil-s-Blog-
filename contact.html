@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - Tranquil's Blog</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    /* (Styles from previous version – unchanged) */
+    :root {
+      --primary: #2c3e50;
+      --overlay: rgba(255, 255, 255, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://source.unsplash.com/1600x900/?contact,nature') no-repeat center center/cover;
+      min-height: 100vh;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    .overlay {
+      background-color: var(--overlay);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: var(--primary);
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 1rem;
+      border-bottom: 1px solid #34495e;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+    }
+
+    .topnav {
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .logo {
+      font-weight: bold;
+    }
+
+    .contact-container {
+      max-width: 900px;
+      margin: 4rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    .typing {
+      display: inline-block;
+      border-right: 3px solid var(--primary);
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0% { border-color: var(--primary); }
+      50% { border-color: transparent; }
+      100% { border-color: var(--primary); }
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      font-size: 1rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    label {
+      position: absolute;
+      top: -1rem;
+      left: 1rem;
+      background: white;
+      padding: 0 5px;
+      font-size: 0.9rem;
+      color: var(--primary);
+      pointer-events: none;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1a252f;
+    }
+
+    .contact-details {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .contact-details i {
+      color: var(--primary);
+      margin-right: 0.5rem;
+    }
+
+    .alert {
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .alert.success { background: #d4edda; color: #155724; }
+    .alert.error { background: #f8d7da; color: #721c24; }
+
+    @media (max-width: 768px) {
+      .contact-container {
+        margin: 2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    … <!-- sidebar links same as homepage -->
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="blog.html"><i class="fas fa-blog"></i> Blog</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+  </div>
+
+  <div class="topnav">
+    <div class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+    <div class="logo">Tranquil's Blog</div>
+  </div>
+
+  <div class="overlay">
+    <div class="contact-container">
+      <h2><span class="typing" id="typing">Contact Us</span></h2>
+      <div class="alert success" id="successMsg">✓ Your message was sent!</div>
+      <div class="alert error" id="errorMsg">⚠ Please fill all fields.</div>
+      <form action="https://formspree.io/f/yourUniqueFormID" method="POST">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" name="name" id="name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" name="_replyto" id="email" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea name="message" id="message" rows="5" required></textarea>
+        </div>
+        <button type="submit">Send Message</button>
+      </form>
+      <div class="contact-details">
+        <p><i class="fas fa-envelope"></i> jonathanolushina34@gmail.com</p>
+        <p><i class="fas fa-phone"></i> +234 800 000 0000</p>
+        <p><i class="fas fa-map-marker-alt"></i> Federal Polytechnic, Bida, Niger State, Nigeria</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* JS from previous version – unchanged */
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+
+    // Typing Animation (simple loop)
+    let text = "Contact Us";
+    let index = 0;
+    function typingEffect() {
+      const typing = document.getElementById("typing");
+      typing.innerText = text.substring(0, index++);
+      if (index <= text.length) {
+        setTimeout(typingEffect, 150);
+      }
+    }
+    typingEffect();
+
+    // Form validation and feedback
+    const contactForm = document.getElementById("contactForm");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
+
+    contactForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (name && email && message) {
+        successMsg.style.display = "block";
+        errorMsg.style.display = "none";
+        contactForm.reset();
+        setTimeout(() => successMsg.style.display = "none", 4000);
+        // You can also send the data to Formspree or a backend here
+      } else {
+        successMsg.style.display = "none";
+        errorMsg.style.display = "block";
+        setTimeout(() => errorMsg.style.display = "none", 4000);
+      }
+    });
+  </script>
+</body>
+</html>
