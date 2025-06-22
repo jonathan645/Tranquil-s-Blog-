@@ -249,46 +249,68 @@
     </div>
   </div>
 
-  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
+  <script> 
+    
+  //contact.
+  // Sidebar toggle logic
+  const sidebar = document.getElementById("sidebar");
+  const hamburger = document.querySelector(".hamburger");
 
-    let text = "Contact Us";
-    let index = 0;
-    function typingEffect() {
-      const typing = document.getElementById("typing");
-      typing.innerText = text.substring(0, index++);
-      if (index <= text.length) {
-        setTimeout(typingEffect, 150);
+  hamburger.addEventListener("click", function () {
+    sidebar.classList.toggle("active");
+  });
+
+  // Close sidebar if clicking outside
+  document.addEventListener("click", function (event) {
+    const isClickInsideSidebar = sidebar.contains(event.target);
+    const isClickOnHamburger = hamburger.contains(event.target);
+
+    if (!isClickInsideSidebar && !isClickOnHamburger) {
+      sidebar.classList.remove("active");
+    }
+  });
+
+  // Typing effect
+  const typing = document.getElementById("typing");
+  const text = "Contact Us";
+  let index = 0;
+
+  function typeEffect() {
+    typing.innerText = text.substring(0, index++);
+    if (index <= text.length) {
+      setTimeout(typeEffect, 150);
+    }
+  }
+
+  typeEffect();
+
+  // Contact form AJAX submit
+  const form = document.getElementById("contactForm");
+  const success = document.getElementById("successMsg");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", form.action, true);
+
+    xhr.onload = function () {
+      if (xhr.status === 200 || xhr.status === 302) {
+        success.style.display = "block";
+        form.reset();
+        setTimeout(() => success.style.display = "none", 6000);
+      } else {
+        alert("Something went wrong. Try again.");
       }
-    }
-    typingEffect();
+    };
 
-    const form = document.getElementById("contactForm");
-    const success = document.getElementById("successMsg");
+    xhr.onerror = function () {
+      alert("Message could not be sent. Please try again later.");
+    };
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", form.action);
-
-      xhr.onload = function () {
-        if (xhr.status === 200 || xhr.status === 302) {
-          success.style.display = "block";
-          form.reset();
-          setTimeout(() => success.style.display = "none", 6000);
-        }
-      };
-
-      xhr.onerror = function () {
-        alert("Message could not be sent. Please try again later.");
-      };
-
-      xhr.send(formData);
-    });
+    xhr.send(formData);
+  });
   </script>
 </body>
 </html>
