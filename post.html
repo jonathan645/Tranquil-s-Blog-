@@ -297,6 +297,7 @@
 
   <!-- Scripts -->
   <script>
+    //post
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("active");
     }
@@ -420,6 +421,17 @@
     }
 
     renderComments();
+    document.addEventListener("click", function (e) {
+  const sidebar = document.getElementById("sidebar");
+  const hamburger = document.querySelector(".hamburger");
+
+  const clickedInsideSidebar = sidebar.contains(e.target);
+  const clickedHamburger = hamburger.contains(e.target);
+
+  if (!clickedInsideSidebar && !clickedHamburger && sidebar.classList.contains("active")) {
+    sidebar.classList.remove("active");
+  }
+});
   </script>
 </body>
 </html>
