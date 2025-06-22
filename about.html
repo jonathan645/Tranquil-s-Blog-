@@ -325,10 +325,32 @@
 
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
+    
+    //about
     AOS.init();
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("active");
     }
+    
+  AOS.init();
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("active");
+  }
+
+  // Close sidebar when clicking outside
+  document.addEventListener("click", function (event) {
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.querySelector(".hamburger");
+    const isClickInsideSidebar = sidebar.contains(event.target);
+    const isHamburger = hamburger.contains(event.target);
+
+    if (!isClickInsideSidebar && !isHamburger) {
+      sidebar.classList.remove("active");
+    }
+  });
+
   </script>
 </body>
 </html>
