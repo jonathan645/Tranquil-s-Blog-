@@ -210,9 +210,24 @@
 
   <!-- Script -->
   <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
+  //privacy
+  const sidebar = document.getElementById("sidebar");
+  const hamburger = document.querySelector(".hamburger");
+
+  function toggleSidebar() {
+    sidebar.classList.toggle("active");
+  }
+
+  // Close sidebar when clicking outside
+  document.addEventListener("click", function (e) {
+    if (
+      sidebar.classList.contains("active") &&
+      !sidebar.contains(e.target) &&
+      !hamburger.contains(e.target)
+    ) {
+      sidebar.classList.remove("active");
     }
+  });
   </script>
 
 </body>
