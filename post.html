@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog Post - Tranquil's Blog</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --background: #f4f4f9;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: -1;
+    }
+
+    .sidebar, .sidebar-box, .main-post, .topnav {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 10px;
+      transition: all 0.4s ease;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: var(--primary);
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      padding: 1rem;
+      border-bottom: 1px solid #34495e;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+    }
+
+    .topnav {
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .hamburger:hover {
+      transform: scale(1.2);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .main-post {
+      flex: 3;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .main-post h2 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
+
+    .main-post img {
+      max-width: 100%;
+      margin: 1rem 0;
+      border-radius: 6px;
+      transition: transform 0.3s;
+    }
+
+    .main-post img:hover {
+      transform: scale(1.03);
+    }
+
+    .post-meta {
+      font-size: 0.9rem;
+      color: gray;
+    }
+
+    .sidebar-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .sidebar-box {
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .sidebar-box h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    .category-list, .featured-posts {
+      list-style: none;
+      padding: 0;
+    }
+
+    .category-list li, .featured-posts li {
+      margin-bottom: 0.5rem;
+    }
+
+    .category-list a, .featured-posts a {
+      text-decoration: none;
+      color: #2c3e50;
+      transition: all 0.2s ease;
+    }
+
+    .category-list a:hover, .featured-posts a:hover {
+      text-decoration: underline;
+      color: #1a252f;
+    }
+
+    .share-buttons {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .share-buttons button {
+      background: #2c3e50;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .share-buttons button:hover {
+      background: #1a252f;
+      transform: scale(1.05);
+    }
+
+    .comment-section {
+      margin-top: 2rem;
+    }
+
+    .comment-section textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      background: #fff;
+    }
+
+    .comment-section button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .comment-section button:hover {
+      background: #1a252f;
+      transform: scale(1.05);
+    }
+
+    .comment-list {
+      margin-top: 1rem;
+      padding-left: 0;
+    }
+
+    .comment-list li {
+      background: #f1f1f1;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 5px;
+      list-style: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body onload="scrollToTop()">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="Blog.html"><i class="fas fa-blog"></i> Blog</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+      <li><a href="privacy.html"><i class="fas fa-shield-alt"></i> Policies</a></li>
+    </ul>
+  </div>
+
+  <!-- Top Navigation -->
+  <div class="topnav">
+    <div class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+    <div class="logo">Tranquil's Blog</div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="main-post" id="postContainer">
+      <h2>Loading post...</h2>
+    </div>
+
+    <div class="sidebar-right">
+      <div class="sidebar-box">
+        <h3>Categories</h3>
+        <ul class="category-list" id="categorySidebar"></ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Featured Posts</h3>
+        <ul class="featured-posts" id="featuredPosts"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import {
+    getFirestore, doc, getDoc, getDocs, collection,
+    query, where, updateDoc, setDoc, addDoc
+  } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+  // Firebase config (yours)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDk5TfR1ZfE0uCl54pTMRuZIk3A4BlGNCs",
+    authDomain: "tranquil-s-blog.firebaseapp.com",
+    projectId: "tranquil-s-blog",
+    storageBucket: "tranquil-s-blog.appspot.com",
+    messagingSenderId: "915680350649",
+    appId: "1:915680350649:web:5df9a7d33b1e2c68f5fba2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Get postId from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get("id");
+
+  const postContainer = document.getElementById("postContainer");
+  const likeBtn = document.getElementById("likeBtn");
+  const likeCountSpan = document.getElementById("likeCount");
+  const commentList = document.getElementById("commentList");
+  const commentCount = document.getElementById("commentCount");
+  const categorySidebar = document.getElementById("categorySidebar");
+  const featuredPosts = document.getElementById("featuredPosts");
+
+  let currentPost = null;
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Fetch post by ID
+  async function fetchPost() {
+    if (!postId) {
+      postContainer.innerHTML = "<p>Post not found.</p>";
+      return;
+    }
+
+    const postRef = doc(db, "posts", postId);
+    const postSnap = await getDoc(postRef);
+
+    if (!postSnap.exists()) {
+      postContainer.innerHTML = "<p>Post not found in Firebase.</p>";
+      return;
+    }
+
+    currentPost = { id: postSnap.id, ...postSnap.data() };
+    renderPost(currentPost);
+    fetchLikes();
+    fetchComments();
+  }
+
+  // Render post content
+  function renderPost(post) {
+    postContainer.innerHTML = `
+      <h2>${post.title}</h2>
+      <p class="post-meta">${post.category || "Uncategorized"} | ${new Date(post.date).toLocaleString()}</p>
+      ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ""}
+      <div>${post.content}</div>
+
+      <div class="share-buttons">
+        <button onclick="copyLink()"><i class="fas fa-link"></i> Copy Link</button>
+        <button onclick="shareToFB()"><i class="fab fa-facebook-f"></i> Facebook</button>
+        <button onclick="shareToWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+        <button onclick="likePost()" id="likeBtn">
+          <i class="fas fa-thumbs-up"></i> Like (<span id="likeCount">0</span>)
+        </button>
+      </div>
+
+      <div class="comment-section">
+        <h3>Comments (<span id="commentCount">0</span>)</h3>
+        <textarea id="commentText" placeholder="Write your comment..."></textarea>
+        <button onclick="addComment()">Post Comment</button>
+        <ul class="comment-list" id="commentList"></ul>
+      </div>
+    `;
+  }
+
+  // Likes
+  async function fetchLikes() {
+    const likeRef = doc(db, "likes", postId);
+    const likeSnap = await getDoc(likeRef);
+
+    if (likeSnap.exists()) {
+      likeCountSpan.textContent = likeSnap.data().count || 0;
+    } else {
+      await setDoc(likeRef, { count: 0 });
+      likeCountSpan.textContent = "0";
+    }
+  }
+
+  async function likePost() {
+    const likeRef = doc(db, "likes", postId);
+    const likeSnap = await getDoc(likeRef);
+
+    if (likeSnap.exists()) {
+      const currentCount = likeSnap.data().count || 0;
+      await updateDoc(likeRef, { count: currentCount + 1 });
+      likeCountSpan.textContent = currentCount + 1;
+    }
+  }
+
+  // Comments
+  async function fetchComments() {
+    const q = query(collection(db, "comments"), where("postId", "==", postId));
+    const snapshot = await getDocs(q);
+
+    commentList.innerHTML = "";
+    let count = 0;
+    snapshot.forEach(doc => {
+      const li = document.createElement("li");
+      li.textContent = doc.data().text;
+      commentList.appendChild(li);
+      count++;
+    });
+
+    commentCount.textContent = count;
+  }
+
+  async function addComment() {
+    const commentText = document.getElementById("commentText").value.trim();
+    if (!commentText) return;
+
+    await addDoc(collection(db, "comments"), {
+      postId,
+      text: commentText,
+      timestamp: Date.now()
+    });
+
+    document.getElementById("commentText").value = "";
+    fetchComments();
+  }
+
+  // Sidebar - Categories
+  async function loadCategories() {
+    const snapshot = await getDocs(collection(db, "posts"));
+    const cats = new Set();
+
+    snapshot.forEach(doc => {
+      const cat = doc.data().category || "Uncategorized";
+      cats.add(cat);
+    });
+
+    categorySidebar.innerHTML = "";
+    cats.forEach(cat => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="blog.html?category=${encodeURIComponent(cat)}">${cat}</a>`;
+      categorySidebar.appendChild(li);
+    });
+  }
+
+  // Sidebar - Featured Posts
+  async function loadFeaturedPosts() {
+    const snapshot = await getDocs(collection(db, "posts"));
+    const allPosts = [];
+    snapshot.forEach(doc => {
+      allPosts.push({ id: doc.id, ...doc.data() });
+    });
+
+    featuredPosts.innerHTML = "";
+    allPosts.slice(0, 3).forEach(post => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="post.html?id=${post.id}">${post.title}</a>`;
+      featuredPosts.appendChild(li);
+    });
+  }
+
+  // Share
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Post link copied!");
+  };
+
+  window.shareToFB = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+  };
+
+  window.shareToWhatsApp = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://wa.me/?text=${url}`, '_blank');
+  };
+
+  window.likePost = likePost;
+  window.addComment = addComment;
+
+  // Sidebar auto-close
+  document.addEventListener("click", function (e) {
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.querySelector(".hamburger");
+    if (!sidebar.contains(e.target) && !hamburger.contains(e.target) && sidebar.classList.contains("active")) {
+      sidebar.classList.remove("active");
+    }
+  });
+
+  // Init
+  fetchPost();
+  loadCategories();
+  loadFeaturedPosts();
+</script>
+</script>
+</body>
+</html>
