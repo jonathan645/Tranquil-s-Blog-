@@ -1,0 +1,506 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Admin - Manage Blog Posts</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">  
+  <style>  
+    * {  
+      box-sizing: border-box;  
+      scroll-behavior: smooth;  
+    }  
+  
+    body {  
+      font-family: 'Poppins', sans-serif;  
+      margin: 0;  
+      padding: 2rem;  
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;  
+      background-size: cover;  
+      position: relative;  
+    }  
+  
+    body::before {  
+      content: '';  
+      position: fixed;  
+      top: 0; left: 0;  
+      width: 100%; height: 100%;  
+      background: rgba(0, 0, 0, 0.6);  
+      z-index: -1;  
+    }  
+  
+    h1, h2 {  
+      text-align: center;  
+      color: #ffffff;  
+      text-shadow: 1px 1px 5px #000;  
+    }  
+  
+    .controls {  
+      display: flex;  
+      justify-content: space-between;  
+      flex-wrap: wrap;  
+      gap: 1rem;  
+      margin-bottom: 1.5rem;  
+      background: rgba(255,255,255,0.9);  
+      padding: 1rem;  
+      border-radius: 8px;  
+      animation: fadeIn 1s ease-in-out;  
+    }  
+  
+    .controls input, .controls select, textarea {  
+      padding: 0.7rem;  
+      font-size: 1rem;  
+      width: 100%;  
+      max-width: 300px;  
+      border: 1px solid #ccc;  
+      border-radius: 6px;  
+      transition: all 0.3s ease-in-out;  
+      outline: none;  
+    }  
+  
+    .controls input:focus, .controls select:focus, textarea:focus {  
+      border-color: #2c3e50;  
+      box-shadow: 0 0 5px #2c3e50;  
+    }  
+  
+    .controls button {  
+      background-color: #27ae60;  
+      color: white;  
+      padding: 0.7rem 1.5rem;  
+      border: none;  
+      border-radius: 6px;  
+      cursor: pointer;  
+      font-weight: bold;  
+      transition: background 0.3s;  
+    }  
+  
+    .controls button:hover {  
+      background-color: #219150;  
+    }  
+  
+    .post-card {  
+      background: rgba(255, 255, 255, 0.95);  
+      padding: 1rem;  
+      margin: 1rem 0;  
+      border-left: 5px solid #2c3e50;  
+      border-radius: 5px;  
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);  
+      animation: fadeIn 0.6s ease;  
+    }  
+  
+    .post-card h3 {  
+      margin: 0;  
+      color: #2c3e50;  
+    }  
+  
+    .post-card p {  
+      color: #555;  
+    }  
+  
+    .post-card .category {  
+      font-size: 0.9rem;  
+      color: #888;  
+      margin-top: 0.3rem;  
+    }  
+  
+    .post-card button {  
+      margin-top: 0.7rem;  
+      margin-right: 0.5rem;  
+      background: #2c3e50;  
+      color: white;  
+      padding: 0.5rem 1rem;  
+      border: none;  
+      border-radius: 4px;  
+      cursor: pointer;  
+      transition: background 0.3s;  
+    }  
+  
+    .post-card button:hover {  
+      background: #1a252f;  
+    }  
+  
+    .post-card button.delete {  
+      background: #e74c3c;  
+    }  
+  
+    .post-card button.delete:hover {  
+      background: #c0392b;  
+    }  
+  
+    .pagination {  
+      text-align: center;  
+      margin-top: 1.5rem;  
+    }  
+  
+    .pagination button {  
+      margin: 0 0.25rem;  
+      padding: 0.5rem 1rem;  
+      background: #eee;  
+      border: none;  
+      border-radius: 4px;  
+      cursor: pointer;  
+    }  
+  
+    .pagination button.active {  
+      background: #2c3e50;  
+      color: white;  
+    }  
+  
+    footer {  
+      text-align: center;  
+      margin-top: 2rem;  
+      color: #fff;  
+      text-shadow: 1px 1px 3px #000;  
+    }  
+  
+    /* Modal */  
+    .modal {  
+      position: fixed;  
+      top: 0; left: 0;  
+      width: 100%; height: 100%;  
+      background: rgba(0,0,0,0.6);  
+      display: none;  
+      align-items: center;  
+      justify-content: center;  
+      z-index: 1000;  
+    }  
+  
+    .modal-content {  
+      background: white;  
+      padding: 2rem;  
+      width: 90%;  
+      max-width: 500px;  
+      border-radius: 8px;  
+      position: relative;  
+      animation: fadeIn 0.5s ease-in-out;  
+    }  
+  
+    .modal-content input, .modal-content textarea {  
+      width: 100%;  
+      margin-bottom: 1rem;  
+      padding: 0.5rem;  
+      font-size: 1rem;  
+      border: 1px solid #ccc;  
+      border-radius: 6px;  
+    }  
+  
+    .modal-content .close-btn {  
+      position: absolute;  
+      top: 10px; right: 15px;  
+      background: red;  
+      color: white;  
+      border: none;  
+      padding: 5px 10px;  
+      border-radius: 4px;  
+      cursor: pointer;  
+    }  
+  
+    #authScreen {  
+      position: fixed;  
+      top:0; left:0;  
+      width:100%; height:100%;  
+      background:#000c;  
+      display:flex;  
+      align-items:center;  
+      justify-content:center;  
+      z-index: 10000;  
+      animation: fadeIn 0.5s ease-in-out;  
+    }  
+  
+    #authScreen div {  
+      background:white;  
+      padding:2rem;  
+      border-radius:8px;  
+      text-align:center;  
+      width:90%;  
+      max-width:400px;  
+    }  
+  
+    #authScreen input {  
+      padding:0.5rem;  
+      width:100%;  
+      margin:1rem 0;  
+      border: 1px solid #ccc;  
+      border-radius: 6px;  
+    }  
+  
+    #authScreen button {  
+      padding:0.5rem 1rem;  
+      background:#2c3e50;  
+      color:white;  
+      border:none;  
+      border-radius:4px;  
+      cursor: pointer;  
+    }  
+  
+    @keyframes fadeIn {  
+      from { opacity: 0; transform: translateY(10px); }  
+      to { opacity: 1; transform: translateY(0); }  
+    }  
+  </style>  
+</head>  
+  
+  <!-- Your HTML remains unchanged from this point -->  
+<body><div id="authScreen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#2c3e50; display:flex; align-items:center; justify-content:center; z-index: 10000;">  
+  <div style="background:white; padding:2rem; border-radius:8px; text-align:center; width:90%; max-width:400px;">  
+    <h2>Admin Login</h2>  
+    <input type="password" id="adminPassword" placeholder="Enter admin password" style="padding:0.5rem; width:100%; margin:1rem 0;" />  
+    <button onclick="checkPassword()" style="padding:0.5rem 1rem; background:#2c3e50; color:white; border:none; border-radius:4px;">Login</button>  
+    <p id="loginError" style="color:red; display:none; margin-top:10px;">Incorrect password.</p>  
+  </div>  
+</div><div id="adminContent" style="display:none;">  
+  <!-- Your full admin panel HTML goes here -->  
+  
+  
+  <h1>Tranquil's  Blog</h1>  
+   <!-- Add New Post -->  
+  <div class="controls" style="flex-direction: column;">  
+    <h2>Add New Post</h2>  
+    <input type="text" id="newTitle" placeholder="Post Title" />  
+    <input type="text" id="newSummary" placeholder="Post Summary" />  
+    <input type="text" id="newCategory" placeholder="Category" />  
+    <input type="text" id="newImage" placeholder="Image URL" />  
+    <textarea id="newContent" placeholder="Post Content"></textarea>  
+    <button onclick="addNewPost()">Add Post</button>  
+    <hr/>  
+  </div>  
+  
+  
+  <div class="controls">  
+    <input type="text" id="searchInput" placeholder="Search by title..." oninput="applyFilters()" />  
+    <select id="categoryFilter" onchange="applyFilters()">  
+      <option value="all">All Categories</option>  
+    </select>  
+  </div>  
+  
+  <div id="managePostsContainer"></div>  
+  
+  <div class="pagination" id="pagination"></div>  
+  
+  <footer>  
+    &copy; <span id="year"></span> TranquilsBlog. All rights reserved.  
+  </footer>  
+  
+  <!-- Edit Modal -->  
+  <div class="modal" id="editModal">  
+    <div class="modal-content">  
+      <button class="close-btn" onclick="closeModal()">X</button>  
+      <h3>Edit Post</h3>  
+      <input type="text" id="editTitle" placeholder="Title" />  
+      <input type="text" id="editSummary" placeholder="Summary" />  
+      <input type="text" id="editCategory" placeholder="Category" />  
+      <input type="text" id="editImage" placeholder="Image URL" />  
+      <textarea id="editContent" rows="5" placeholder="Content"></textarea>  
+      <button onclick="saveEdit()">Save Changes</button>  
+    </div>  
+  </div>  
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>  
+  <script>  
+    CKEDITOR.replace('newContent');  
+  
+    function addNewPost() {  
+      const title = document.getElementById('newTitle').value.trim();  
+      const summary = document.getElementById('newSummary').value.trim();  
+      const category = document.getElementById('newCategory').value.trim() || "Uncategorized";  
+      const image = document.getElementById('newImage').value.trim();  
+      const content = CKEDITOR.instances.newContent.getData();  
+  
+      if (!title || !content) {  
+        alert("Title and Content are required.");  
+        return;  
+      }  
+  
+      const newPost = {  
+        title,  
+        summary,  
+        category,  
+        image,  
+        content,  
+        createdAt: new Date().toISOString()  
+      };  
+  
+      blogPosts.unshift(newPost); // add to beginning  
+      localStorage.setItem("blogPosts", JSON.stringify(blogPosts));  
+        
+      document.getElementById('newTitle').value = '';  
+      document.getElementById('newSummary').value = '';  
+      document.getElementById('newCategory').value = '';  
+      document.getElementById('newImage').value = '';  
+      CKEDITOR.instances.newContent.setData('');  
+  
+      populateCategories();  
+      applyFilters();  
+      alert("Post added successfully!");  
+    }  
+    
+    document.getElementById("year").textContent = new Date().getFullYear();  
+  
+    const postsPerPage = 5;  
+    let currentPage = 1;  
+    let blogPosts = JSON.parse(localStorage.getItem("blogPosts")) || [];  
+    let filteredPosts = [...blogPosts];  
+    let editingIndex = null;  
+  
+    function applyFilters() {  
+      const search = document.getElementById("searchInput").value.toLowerCase();  
+      const selectedCategory = document.getElementById("categoryFilter").value;  
+  
+      filteredPosts = blogPosts.filter(post => {  
+        const matchTitle = post.title.toLowerCase().includes(search);  
+        const matchCategory = selectedCategory === "all" || (post.category || "Uncategorized") === selectedCategory;  
+        return matchTitle && matchCategory;  
+      });  
+  
+      currentPage = 1;  
+      renderPosts();  
+    }  
+  
+    function populateCategories() {  
+      const categorySet = new Set(blogPosts.map(p => p.category || "Uncategorized"));  
+      const select = document.getElementById("categoryFilter");  
+      select.innerHTML = `<option value="all">All Categories</option>`;  
+      categorySet.forEach(cat => {  
+        select.innerHTML += `<option value="${cat}">${cat}</option>`;  
+      });  
+    }  
+  
+    function renderPosts() {  
+      const container = document.getElementById("managePostsContainer");  
+      container.innerHTML = "";  
+  
+      if (filteredPosts.length === 0) {  
+        container.innerHTML = "<p>No posts match your filters.</p>";  
+        return;  
+      }  
+  
+      const start = (currentPage - 1) * postsPerPage;  
+      const end = start + postsPerPage;  
+      const visiblePosts = filteredPosts.slice(start, end);  
+  
+      visiblePosts.forEach((post, index) => {  
+        const realIndex = blogPosts.indexOf(post);  
+        container.innerHTML += `  
+          <div class="post-card">  
+            <h3>${post.title}</h3>  
+            <div class="category"><strong>Category:</strong> ${post.category || "Uncategorized"}</div>  
+            <p>${(post.summary || post.content).substring(0, 100)}...</p>  
+            <button onclick="openEditModal(${realIndex})">Edit</button>  
+            <button class="delete" onclick="deletePost(${realIndex})">Delete</button>  
+          </div>  
+        `;  
+      });  
+  
+      renderPagination();  
+    }  
+  
+    function renderPagination() {  
+      const totalPages = Math.ceil(filteredPosts.length / postsPerPage);  
+      const pagination = document.getElementById("pagination");  
+      pagination.innerHTML = "";  
+  
+      for (let i = 1; i <= totalPages; i++) {  
+        pagination.innerHTML += `  
+          <button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>  
+        `;  
+      }  
+    }  
+  
+    function goToPage(page) {  
+      currentPage = page;  
+      renderPosts();  
+    }  
+  
+    function deletePost(index) {  
+      if (confirm("Are you sure you want to delete this post?")) {  
+        blogPosts.splice(index, 1);  
+        localStorage.setItem("blogPosts", JSON.stringify(blogPosts));  
+        applyFilters();  
+        populateCategories();  
+        alert("Post deleted.");  
+      }  
+    }  
+  
+    function openEditModal(index) {  
+      editingIndex = index;  
+      const post = blogPosts[index];  
+      document.getElementById("editTitle").value = post.title;  
+      document.getElementById("editSummary").value = post.summary || "";  
+      document.getElementById("editImage").value = post.image || "";  
+      document.getElementById("editContent").value = post.content;  
+      document.getElementById("editCategory").value = post.category || "";  
+      document.getElementById("editModal").style.display = "flex";  
+    }  
+  
+    function closeModal() {  
+      document.getElementById("editModal").style.display = "none";  
+      editingIndex = null;  
+    }  
+  
+    function saveEdit() {  
+      const updatedPost = {  
+        ...blogPosts[editingIndex],  
+        title: document.getElementById("editTitle").value,  
+        summary: document.getElementById("editSummary").value,  
+        category: document.getElementById("editCategory").value,  
+        image: document.getElementById("editImage").value,  
+        content: document.getElementById("editContent").value  
+      };  
+  
+      blogPosts[editingIndex] = updatedPost;  
+      localStorage.setItem("blogPosts", JSON.stringify(blogPosts));  
+      closeModal();  
+      populateCategories();  
+      applyFilters();  
+      alert("Post updated successfully!");  
+    }  
+  
+    // Initialize  
+    populateCategories();  
+    applyFilters();  
+      
+      
+      
+      
+      
+  const correctPassword = "phantom_joe"; // change this to your secret password  
+  
+  function checkPassword() {  
+    const input = document.getElementById("adminPassword").value;  
+    const error = document.getElementById("loginError");  
+  
+    if (input === correctPassword) {  
+      document.getElementById("authScreen").style.display = "none";  
+      document.getElementById("adminContent").style.display = "block";  
+    } else {  
+      error.style.display = "block";  
+    }  
+  }  
+</script>  
+      
+    
+</div>  
+</body>  
+</html>  
+<script type="module">  
+  // Import the functions you need from the SDKs you need  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";  
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";  
+  // TODO: Add SDKs for Firebase products that you want to use  
+  // https://firebase.google.com/docs/web/setup#available-libraries  
+  
+  // Your web app's Firebase configuration  
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional  
+  const firebaseConfig = {  
+    apiKey: "AIzaSyDuYQmwHF609s83lxh9xtjMdjU6ibPMxBc",  
+    authDomain: "tranquil-s-blog.firebaseapp.com",  
+    projectId: "tranquil-s-blog",  
+    storageBucket: "tranquil-s-blog.firebasestorage.app",  
+    messagingSenderId: "137901290766",  
+    appId: "1:137901290766:web:dedb7b07f7dc2acd54935f",  
+    measurementId: "G-21PZGSMLRY"  
+  };  
+  
+  // Initialize Firebase  
+  const app = initializeApp(firebaseConfig);  
+  const analytics = getAnalytics(app);  
+</script>This one is for the admin page, I want you to do the rest one, record the necessary changes.
